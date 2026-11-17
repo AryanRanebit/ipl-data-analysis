@@ -11,8 +11,9 @@ matches - verified from the dataset fields).
   build flat CSV tables (`matches.csv`, `deliveries.csv`) with integrity checks.
 - Stage 2 (started): first analysis tables and tests - matches per season,
   top-ten batters by runs, and recorded outcome categories.
-  [Methods and findings](docs/first-analysis.md). Bowler rankings, team win
-  rates, toss impact, venue trends and chasing vs defending are still to come.
+  [First analysis methods](docs/first-analysis.md). Bowler wicket rankings and
+  season totals are also ready: [bowling methods and findings](docs/bowling-analysis.md).
+  Team win rates, toss impact, venue trends and chasing vs defending are still to come.
 - Stage 3 (later): charts, findings write-up, resume bullet from measured results.
 
 ## Data source and license
@@ -30,12 +31,13 @@ matches - verified from the dataset fields).
 pip install -r requirements.txt
 python src/fetch_data.py     # downloads raw data from cricsheet.org
 python src/build_dataset.py  # JSON -> data/processed/{matches,deliveries}.csv
-python src/analyze.py        # frozen CSVs -> results/*.csv
+python src/analyze.py        # first three descriptive tables
+python src/analyze_bowling.py # bowler wickets overall and by season
 python -m pytest -q          # calculation and snapshot checks
 ```
 
 To reproduce only the analysis, skip the download/build commands and run
-`python src/analyze.py` on the committed CSVs. Fetching and rebuilding may
+`python src/analyze.py` and `python src/analyze_bowling.py` on the committed CSVs. Fetching and rebuilding may
 change the snapshot, so review any data changes before replacing it.
 
 The processed CSVs under `data/processed/` are the frozen snapshot this
@@ -46,9 +48,11 @@ project's results are computed from.
 - `src/fetch_data.py` - download raw data
 - `src/build_dataset.py` - parse JSON into flat CSVs
 - `src/analyze.py` - produce the first three descriptive tables
-- `tests/test_analysis.py` - examples, input checks and independent CSV recount
+- `src/analyze_bowling.py` - credited wicket totals and innings bowled
+- `tests/` - examples, input checks and independent CSV recounts
 
 - `data/processed/` - frozen dataset snapshot
 - `results/` - reproducible analysis tables
-- `docs/first-analysis.md` - measured findings, definitions and limitations
+- `docs/first-analysis.md` - first findings, definitions and limitations
+- `docs/bowling-analysis.md` - bowling findings, wicket-credit rules and limits
 - `figures/` - planned chart output (not added yet)
