@@ -35,7 +35,6 @@ BOWLER_WICKETS = {
     "lbw",
     "stumped",
     "hit wicket",
-    "hit the ball twice",
 }
 
 EXTRA_TYPES = ["wides", "noballs", "byes", "legbyes", "penalty"]
