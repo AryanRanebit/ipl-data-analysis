@@ -15,7 +15,8 @@ matches - verified from the dataset fields).
   season totals are also ready: [bowling methods and findings](docs/bowling-analysis.md).
   Team win rates and toss impact are ready too:
   [team and toss findings](docs/team-and-toss-analysis.md).
-  Venue trends and chasing vs defending are still to come.
+  Venue and season chasing/defending tables are ready:
+  [venue and chasing findings](docs/venue-and-chasing-analysis.md).
 - Stage 3 (later): charts, findings write-up, resume bullet from measured results.
 
 ## Data source and license
@@ -36,12 +37,13 @@ python src/build_dataset.py  # JSON -> data/processed/{matches,deliveries}.csv
 python src/analyze.py        # first three descriptive tables
 python src/analyze_bowling.py # bowler wickets overall and by season
 python src/analyze_teams_toss.py # team win rates and toss impact
+python src/analyze_venues.py # exact venue labels and season chasing outcomes
 python -m pytest -q          # calculation and snapshot checks
 ```
 
 To reproduce only the analysis, skip the download/build commands and run
 `python src/analyze.py`, `python src/analyze_bowling.py` and
-`python src/analyze_teams_toss.py` on the committed CSVs. Fetching and rebuilding may
+`python src/analyze_teams_toss.py` and `python src/analyze_venues.py` on the committed CSVs. Fetching and rebuilding may
 change the snapshot, so review any data changes before replacing it.
 
 The processed CSVs under `data/processed/` are the frozen snapshot this
@@ -54,6 +56,7 @@ project's results are computed from.
 - `src/analyze.py` - produce the first three descriptive tables
 - `src/analyze_bowling.py` - credited wicket totals and innings bowled
 - `src/analyze_teams_toss.py` - team win rates and toss-win splits
+- `src/analyze_venues.py` - venue and season chasing/defending outcomes
 - `tests/` - examples, input checks and independent CSV recounts
 
 - `data/processed/` - frozen dataset snapshot
@@ -61,4 +64,5 @@ project's results are computed from.
 - `docs/first-analysis.md` - first findings, definitions and limitations
 - `docs/bowling-analysis.md` - bowling findings, wicket-credit rules and limits
 - `docs/team-and-toss-analysis.md` - team win rates, toss findings and limits
+- `docs/venue-and-chasing-analysis.md` - venue labels, chasing outcomes and limits
 - `figures/` - planned chart output (not added yet)
