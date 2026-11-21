@@ -10,7 +10,12 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
-from analyze_teams_toss import team_win_rates, toss_impact, validate_teams
+from analyze_teams_toss import (
+    team_win_rates,
+    toss_decision_by_season,
+    toss_impact,
+    validate_teams,
+)
 
 
 @pytest.fixture
@@ -36,6 +41,16 @@ def test_appearances_count_ties_and_no_results_but_wins_do_not(example):
         "matches": [3, 5, 2],
         "wins": [2, 1, 0],
         "win_pct": [66.67, 20.0, 0.0],
+    }
+
+
+def test_toss_decisions_count_every_recorded_match(example):
+    assert toss_decision_by_season(example).to_dict("list") == {
+        "season": [2025, 2026],
+        "matches": [3, 2],
+        "chose_bat": [1, 1],
+        "chose_field": [2, 1],
+        "chose_field_pct": [66.67, 50.0],
     }
 
 
@@ -143,9 +158,24 @@ def test_snapshot_with_independent_recount():
     ]
     assert list(impact.itertuples(index=False, name=None)) == expected_impact
     assert rates["wins"].sum() == sum(toss_games[k] for k in ["bat", "field"])
+    decisions = toss_decision_by_season(matches)
+    with open(ROOT / "data/processed/matches.csv", newline="") as file:
+        per_season = {}
+        for row in csv.DictReader(file):
+            year = int(row["season"])
+            bat, field, total = per_season.get(year, (0, 0, 0))
+            bat += row["toss_decision"] == "bat"
+            field += row["toss_decision"] == "field"
+            per_season[year] = (bat, field, total + 1)
+    expected_decisions = [
+        (year, bat + field, bat, field, round(field / (bat + field) * 100, 2))
+        for year, (bat, field, _total) in sorted(per_season.items())
+    ]
+    assert list(decisions.itertuples(index=False, name=None)) == expected_decisions
     for filename, expected_table in [
         ("team_win_rates", rates),
         ("toss_impact", impact),
+        ("toss_decision_by_season", decisions),
     ]:
         committed = pd.read_csv(ROOT / f"results/{filename}.csv")
         pd.testing.assert_frame_equal(committed, expected_table)
