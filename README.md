@@ -5,21 +5,23 @@ Exploratory data analysis of Indian Premier League cricket: 19 seasons,
 (snapshot current through 31 May 2026; men's IPL only, no duplicate
 matches - verified from the dataset fields).
 
-**Status: work in progress, built in stages.**
+**Status: all planned stages complete, built in stages.**
 
 - Stage 1 (done): reproducible data pipeline - fetch raw Cricsheet data and
   build flat CSV tables (`matches.csv`, `deliveries.csv`) with integrity checks.
-- Stage 2 (started): first analysis tables and tests - matches per season,
+- Stage 2 (done): analysis tables and tests - matches per season,
   top-ten batters by runs, and recorded outcome categories.
   [First analysis methods](docs/first-analysis.md). Bowler wicket rankings and
-  season totals are also ready: [bowling methods and findings](docs/bowling-analysis.md).
-  Team win rates and toss impact are ready too:
+  season totals: [bowling methods and findings](docs/bowling-analysis.md).
+  Team win rates and toss impact:
   [team and toss findings](docs/team-and-toss-analysis.md).
-  Venue and season chasing/defending tables are ready:
+  Venue and season chasing/defending tables:
   [venue and chasing findings](docs/venue-and-chasing-analysis.md).
-- Stage 3 (started): [first chart gallery](docs/chart-gallery.md) with season
-  match counts, top-ten batters/bowlers and chasing shares by season.
-  Further charts, final findings and a measured resume bullet remain.
+  Scoring rate by season: `src/analyze_scoring.py`.
+- Stage 3 (done): [chart gallery](docs/chart-gallery.md) with ten charts -
+  season coverage, outcomes, player rankings, team win shares, toss impact
+  and strategy, venue chasing shares and scoring rate - plus the closing
+  [final findings and measured resume bullet](docs/final-findings.md).
 
 ## Data source and license
 
@@ -40,13 +42,14 @@ python src/analyze.py        # first three descriptive tables
 python src/analyze_bowling.py # bowler wickets overall and by season
 python src/analyze_teams_toss.py # team win rates and toss impact
 python src/analyze_venues.py # exact venue labels and season chasing outcomes
-python src/plot_analysis.py  # four headless PNG charts from the frozen snapshot
+python src/analyze_scoring.py # scoring rate by season
+python src/plot_analysis.py  # ten headless PNG charts from the frozen snapshot
 python -m pytest -q          # calculation and snapshot checks
 ```
 
 To reproduce only the analysis, skip the download/build commands and run
 `python src/analyze.py`, `python src/analyze_bowling.py` and
-`python src/analyze_teams_toss.py` and `python src/analyze_venues.py` on the committed CSVs. Fetching and rebuilding may
+`python src/analyze_teams_toss.py`, `python src/analyze_venues.py` and `python src/analyze_scoring.py` on the committed CSVs. Fetching and rebuilding may
 change the snapshot, so review any data changes before replacing it.
 
 The processed CSVs under `data/processed/` are the frozen snapshot this
@@ -60,6 +63,7 @@ project's results are computed from.
 - `src/analyze_bowling.py` - credited wicket totals and innings bowled
 - `src/analyze_teams_toss.py` - team win rates and toss-win splits
 - `src/analyze_venues.py` - venue and season chasing/defending outcomes
+- `src/analyze_scoring.py` - scoring rate by season
 - `src/plot_analysis.py` - reproducible headless chart gallery
 - `tests/` - examples, input checks and independent CSV recounts
 
@@ -70,4 +74,5 @@ project's results are computed from.
 - `docs/team-and-toss-analysis.md` - team win rates, toss findings and limits
 - `docs/venue-and-chasing-analysis.md` - venue labels, chasing outcomes and limits
 - `docs/chart-gallery.md` - chart previews, definitions and reproduction steps
-- `figures/` - four generated PNG charts, not live IPL records
+- `docs/final-findings.md` - closing measured findings, limits and resume bullet
+- `figures/` - ten generated PNG charts, not live IPL records
