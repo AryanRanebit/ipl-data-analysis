@@ -114,6 +114,23 @@ def toss_impact(matches: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def toss_decision_by_season(matches: pd.DataFrame) -> pd.DataFrame:
+    """What toss winners chose per season, as recorded.
+
+    Every recorded match has a toss decision, so ties and no-results count
+    here too. The field-first share is a descriptive strategy trend, not a
+    claim about which choice is better.
+    """
+    validate_teams(matches)
+    table = matches.groupby("season")["toss_decision"].value_counts().unstack()
+    table = table.reindex(columns=["bat", "field"], fill_value=0)
+    table = table.rename(columns={"bat": "chose_bat", "field": "chose_field"})
+    table = table.rename_axis(columns=None)
+    table.insert(0, "matches", table["chose_bat"] + table["chose_field"])
+    table["chose_field_pct"] = (table["chose_field"] / table["matches"] * 100).round(2)
+    return table.reset_index()
+
+
 def main() -> None:
     matches = pd.read_csv(ROOT / "data/processed/matches.csv")
     deliveries = pd.read_csv(ROOT / "data/processed/deliveries.csv")
@@ -121,6 +138,7 @@ def main() -> None:
     tables = {
         "team_win_rates": team_win_rates(matches),
         "toss_impact": toss_impact(matches),
+        "toss_decision_by_season": toss_decision_by_season(matches),
     }
     output = ROOT / "results"
     output.mkdir(exist_ok=True)
